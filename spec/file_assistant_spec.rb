@@ -37,14 +37,15 @@ describe FileAssistant do
 
       file_assistant = FileAssistant.new
       list = file_assistant.files_to_delete
-      # TODO
-      list.each {|x| puts x}
-      list.size.should == 3
-      #list.each { |item| expect( contents.include?(item) ).to eq(true) }
-
-      File.delete( FileAssistantConfig.to_delete )
+      # Verify contents with golden file
+      index = 0
+      list.each do |item|
+        item.should == contents[index]
+        index += 1
+      end
 
       # Restore original config file
+      File.delete( FileAssistantConfig.to_delete )
       if File.exists?( @@backup_of_to_delete )
         File.rename(@@backup_of_to_delete, FileAssistantConfig.to_delete)
       end
