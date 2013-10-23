@@ -63,7 +63,7 @@ describe FileAssistant do
 
   it 'deletes a file matching patterns in an array' do
     file_names = ['test.obj', 'another.obj']
-    patterns = ['*.obj']
+    patterns = ['**/*.obj']
 
     # Create the test files and confirm
     file_names.each do |file|
