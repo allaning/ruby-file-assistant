@@ -1,5 +1,8 @@
 require 'file_assistant_config'
 
+# Ruby File Assistant (RFA) helps automate mundane file management tasks.
+# Create configuration files to instruct RFA to perform tasks such as
+# deleting or renaming files based on specified patterns.
 class FileAssistant
 
   # If the config file containing list of patterns to delete exists,
@@ -15,11 +18,14 @@ class FileAssistant
   end
 
   # Delete files matching specified patterns.
-  # Patterns must be specified in an array
+  # Patterns must be specified in an array.
   def delete_files( patterns )
     patterns.each do |pattern|
       found_files = Dir.glob( "#{pattern}" )
-      found_files.each { |found_file| File.delete( found_file ) }
+      found_files.each do |found_file|
+        puts "Deleting file: #{found_file}"
+        File.delete( found_file )
+      end
     end
   end
 
