@@ -2,10 +2,11 @@ require 'helper'
 
 # Test configuration helper
 module TestConfig
-  class << self
-    attr_accessor :backup_file
+  @backup_file_name = FileAssistantConfig.to_delete + '.bak'
+
+  def self.backup_file
+    @backup_file_name
   end
-  self.backup_file = FileAssistantConfig.to_delete + '.bak'
 end
 
 
