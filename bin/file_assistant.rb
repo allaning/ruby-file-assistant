@@ -14,4 +14,13 @@ class FileAssistant
     end
   end
 
+  # Delete files in current directory matching specified patterns.
+  # Patterns must be specified in an array
+  def delete_files( patterns )
+    patterns.each do |pattern|
+      found_files = Dir.glob( "#{pattern}" )
+      found_files.each { |found_file| File.delete( found_file ) }
+    end
+  end
+
 end

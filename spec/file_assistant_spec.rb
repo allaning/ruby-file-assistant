@@ -61,4 +61,28 @@ describe FileAssistant do
     end
   end
 
+  it 'deletes a file matching patterns in an array' do
+    file_names = ['test.obj', 'another.obj']
+    patterns = ['*.obj']
+
+    # Create the test files and confirm
+    file_names.each do |file|
+      test_file = File.new( file, "w" )
+      test_file.puts 'Hi there'
+      test_file.close
+    end
+    file_names.each do |file|
+      File.exists?(file).should == true
+    end
+
+    # Delete the files
+    assist = FileAssistant.new
+    assist.delete_files( patterns )
+
+    # Confirm deleted
+    file_names.each do |file|
+      File.exists?(file).should_not == true
+    end
+  end
+
 end
