@@ -5,16 +5,21 @@ require 'file_assistant_config'
 # deleting or renaming files based on specified patterns.
 class FileAssistant
 
-  # If the config file containing list of patterns to delete exists,
-  # open the file and return its contents as an array
-  def files_to_delete
-    if File.exists?( FileAssistantConfig.to_delete )
-      config_file = File.open( FileAssistantConfig.to_delete, "r")
+  # Reads and returns contents of specified file.
+  def read_file( file_name )
+    if File.exists?( file_name )
+      file = File.open( file_name, "r" )
       contents = []
-      config_file.each { |line| contents << line.chomp }
-      config_file.close
+      file.each { |line| contents << line.chomp }
+      file.close
       return contents
     end
+  end
+
+  # If the config file containing list of patterns to delete exists,
+  # open the file and return its contents as an array.
+  def files_to_delete
+    read_file( FileAssistantConfig.to_delete )
   end
 
   # Delete files matching specified patterns.

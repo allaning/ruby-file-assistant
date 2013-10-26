@@ -69,6 +69,8 @@
           
           <li><a href="#method-i-files_to_delete">#files_to_delete</a></li>
           
+          <li><a href="#method-i-read_file">#read_file</a></li>
+          
         </ul>
       </div>
       
@@ -169,7 +171,7 @@ array.</p>
             
             <div class="method-source-code" id="delete_files-source">
 <pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 22</span>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 27</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_files</span>( <span class="ruby-identifier">patterns</span> )
   <span class="ruby-identifier">patterns</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">pattern</span><span class="ruby-operator">|</span>
     <span class="ruby-identifier">found_files</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>( <span class="ruby-node">&quot;#{pattern}&quot;</span> )
@@ -203,21 +205,15 @@ array.</p>
           <div class="method-description">
             
             <p>If the config file containing list of patterns to delete exists, open the
-file and return its contents as an array</p>
+file and return its contents as an array.</p>
             
 
             
             <div class="method-source-code" id="files_to_delete-source">
 <pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 10</span>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 21</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">files_to_delete</span>
-  <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>( <span class="ruby-constant">FileAssistantConfig</span>.<span class="ruby-identifier">to_delete</span> )
-    <span class="ruby-identifier">config_file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-constant">FileAssistantConfig</span>.<span class="ruby-identifier">to_delete</span>, <span class="ruby-string">&quot;r&quot;</span>)
-    <span class="ruby-identifier">contents</span> = []
-    <span class="ruby-identifier">config_file</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span> <span class="ruby-identifier">contents</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp</span> }
-    <span class="ruby-identifier">config_file</span>.<span class="ruby-identifier">close</span>
-    <span class="ruby-keyword">return</span> <span class="ruby-identifier">contents</span>
-  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">read_file</span>( <span class="ruby-constant">FileAssistantConfig</span>.<span class="ruby-identifier">to_delete</span> )
 <span class="ruby-keyword">end</span></pre>
             </div><!-- files_to_delete-source -->
             
@@ -227,6 +223,45 @@ file and return its contents as an array</p>
 
           
         </div><!-- files_to_delete-method -->
+
+      
+        <div id="read_file-method" class="method-detail ">
+          <a name="method-i-read_file"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">read_file</span><span
+              class="method-args">( file_name )</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Reads and returns contents of specified file.</p>
+            
+
+            
+            <div class="method-source-code" id="read_file-source">
+<pre>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_file</span>( <span class="ruby-identifier">file_name</span> )
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>( <span class="ruby-identifier">file_name</span> )
+    <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">file_name</span>, <span class="ruby-string">&quot;r&quot;</span> )
+    <span class="ruby-identifier">contents</span> = []
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span> <span class="ruby-identifier">contents</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp</span> }
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">contents</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- read_file-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- read_file-method -->
 
       
       </div><!-- public-instance-method-details -->
