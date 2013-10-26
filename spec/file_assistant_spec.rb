@@ -1,9 +1,10 @@
 require 'helper'
+require 'fileutils'
 
 # Test configuration helper
 module TestConfig
   @backup_file_name = FileAssistantConfig.to_delete + '.bak'
-  @temp_test_file_prefix = 'testXyz123_'
+  @temp_test_file_prefix = 'testXyz123'
 
   def self.backup_file
     @backup_file_name
@@ -50,6 +51,23 @@ describe FileAssistant do
     end
   end
 
+  it 'displays contents of a file' do
+    # Setup
+    patterns = [ '*.a', '*.obj' ]
+    temp_file_name = "#{TestConfig.test_prefix}_patterns.txt"
+    temp_file = File.new( temp_file_name, "w" )
+    temp_file.puts patterns
+    temp_file.close
+
+    # Test
+    assist = FileAssistant.new
+    contents = assist.read_file( temp_file_name )
+    contents.should_not == nil
+    puts contents
+
+    File.delete( temp_file_name )
+  end
+
   context 'when to_delete config file does not exist' do
     it 'does nothing' do
       # Rename existing file
@@ -58,7 +76,7 @@ describe FileAssistant do
       end
 
       file_assistant = FileAssistant.new
-      list = file_assistant.files_to_delete
+      list = file_assistant.get_files_to_delete
       list.should == nil
 
       # Restore original config file
@@ -82,7 +100,7 @@ describe FileAssistant do
       new_file.close
 
       file_assistant = FileAssistant.new
-      list = file_assistant.files_to_delete
+      list = file_assistant.get_files_to_delete
       # Verify contents with golden file
       index = 0
       list.each do |item|
@@ -99,31 +117,50 @@ describe FileAssistant do
   end
 
   it 'deletes a file matching patterns in an array' do
-    file_names = [ "#{TestConfig.test_prefix}a.obj",
-                   "#{TestConfig.test_prefix}_another.obj",
-                   "#{TestConfig.test_prefix}abc.obj",
-                   "#{TestConfig.test_prefix}2.a" ]
-    patterns = [ "**/#{TestConfig.test_prefix}*.obj",
-                 "**/#{TestConfig.test_prefix}*.a" ]
+    test_dir_name = "#{TestConfig.test_prefix}_dir"
+    test_dir_to_delete_name = "#{TestConfig.test_prefix}_delete_dir"
+    test_dir_to_keep_name = "#{TestConfig.test_prefix}_keep_dir"
+    keep_file_names = [ "#{TestConfig.test_prefix}a.obj",
+                        "#{TestConfig.test_prefix}_another.obj",
+                        "#{TestConfig.test_prefix}abc.obj",
+                        "#{TestConfig.test_prefix}2.a" ]
+    delete_file_names = [ "#{TestConfig.test_prefix}aa.a",
+                          "#{TestConfig.test_prefix}bb.a" ]
+    patterns = [ "**/#{test_dir_to_delete_name}/**/#{TestConfig.test_prefix}*.obj",
+                 "**/#{test_dir_to_delete_name}/**/#{TestConfig.test_prefix}*.a" ]
 
-    # Create the test files and confirm
-    file_names.each do |file|
+    # Create the test files and confirm; Create test directory two levels deep
+    FileUtils.mkdir_p "#{test_dir_name}/#{test_dir_to_delete_name}"
+    FileUtils.mkdir_p "#{test_dir_name}/#{test_dir_to_keep_name}"
+    # Create files to keep
+    FileUtils.cd "#{test_dir_name}/#{test_dir_to_keep_name}"
+    keep_file_names.each do |file|
       test_file = File.new( file, "w" )
       test_file.puts 'Hi there'
       test_file.close
     end
-    file_names.each do |file|
-      File.exists?(file).should == true
+    # Create files to delete
+    FileUtils.cd "../#{test_dir_to_delete_name}"
+    delete_file_names.each do |file|
+      test_file = File.new( file, "w" )
+      test_file.puts 'Hi there'
+      test_file.close
     end
+    FileUtils.cd "../.."
 
     # Delete the files
     assist = FileAssistant.new
     assist.delete_files( patterns )
 
+    # Confirm files kept
+    FileUtils.cd "#{test_dir_name}/#{test_dir_to_keep_name}"
+    keep_file_names.each { |file| File.exists?(file).should == true }
     # Confirm deleted
-    file_names.each do |file|
-      File.exists?(file).should_not == true
-    end
+    FileUtils.cd "../#{test_dir_to_delete_name}"
+    delete_file_names.each { |file| File.exists?(file).should_not == true }
+    # Remove the test files and directories
+    FileUtils.cd "../.."
+    FileUtils.rm_rf "#{test_dir_name}"  # remove test directories
   end
 
 end

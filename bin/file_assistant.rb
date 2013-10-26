@@ -18,7 +18,7 @@ class FileAssistant
 
   # If the config file containing list of patterns to delete exists,
   # open the file and return its contents as an array.
-  def files_to_delete
+  def get_files_to_delete
     read_file( FileAssistantConfig.to_delete )
   end
 
