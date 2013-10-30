@@ -1,41 +1,10 @@
 require_relative 'file_assistant_config'
+require 'optparse'
 
 # Ruby File Assistant (RFA) helps automate mundane file management tasks.
 # Create configuration files to instruct RFA to perform tasks such as
 # deleting or renaming files based on specified patterns.
 class FileAssistant
-  def initialize
-  end
-
-  # Show list of matches to_delete and prompt user to delete them.
-  def prompt_for_files_to_delete
-    patterns = get_patterns_to_delete
-    if patterns != nil
-      puts 'Patterns to delete:'
-      puts '==================='
-      puts patterns
-      puts 'Matching Files to be deleted:'
-      puts '============================='
-      found_files = get_matching_files( patterns )
-      if found_files.length > 0
-        puts found_files
-        puts '============================='
-        # Prompt user
-        print 'Delete (y/N)? '
-        answer = gets.chomp
-        if answer.upcase == 'Y'
-          puts "Deleting files..."
-          delete_files( patterns )
-        else
-          puts 'Aborted.'
-        end
-      else
-        puts 'No matching files found.'
-      end
-    else
-      puts 'No to_delete input file found.'
-    end
-  end
 
   # Reads and returns contents of specified file.
   def read_file( file_name )
@@ -66,31 +35,59 @@ class FileAssistant
 
   # Delete files matching specified patterns.
   # Patterns must be specified in an array.
-  def delete_files( patterns )
-    patterns.each do |pattern|
-      found_files = Dir.glob( "#{pattern}" )
-      found_files.each do |found_file|
-        puts "Deleting file: #{found_file}"
-        File.delete( found_file )
-      end
+  def delete_files( files )
+    files.each do |file|
+      puts "Deleting file: #{file}"
+      File.delete( file )
     end
   end
 
 end  # class FileAssistant
 
+# Parse command line args
+def parse_args(argv = ::ARGV)
+  params = {}
+  opt_parser = OptionParser.new do |opt|
+    opt.on("-d", "--delete", "Delete files") { params[:delete] = true }
+    opt.on("-f", "--force", "Force without confirming") { params[:force] = true }
+    opt.on_tail("-h", "--help", "Show this message") do
+      puts opt
+      exit
+    end
+  end
+  opt_parser.parse! argv
+  params
+end
+
 
 # Script starts here
 file_assistant = FileAssistant.new
-if ARGV[0] == "-f"
-  # Delete files without prompting
+params = parse_args
+#puts params
+
+if params[:delete] == true
+  # Get list of files to delete
   patterns = file_assistant.get_patterns_to_delete
   puts 'Patterns to delete:'
   puts '==================='
   puts patterns
   puts '==================='
-  file_assistant.delete_files( patterns )
-else
-  ARGV.clear
-  file_assistant.prompt_for_files_to_delete
+  files = file_assistant.get_matching_files( patterns )
+  if files.length > 0
+    puts files
+    unless params[:force] == true
+      # Prompt user to confirm deletion
+      print 'Delete (y/N)? '
+      ARGV.clear
+      answer = gets.chomp
+      unless answer.upcase == 'Y' || answer.upcase == "YES"
+        puts 'Aborted.'
+        exit
+      end
+    end
+    file_assistant.delete_files( files )
+  else
+    puts 'No matching files found.'
+  end
 end
 

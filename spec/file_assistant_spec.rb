@@ -140,7 +140,7 @@ describe FileAssistant do
     end
   end
 
-  describe '#get_matching_files_to_delete' do
+  describe '#get_matching_files' do
     it 'gets a list of patterns then find list of matching files' do
       # Setup
       patterns_to_delete = TestConfig.patterns
@@ -209,9 +209,10 @@ describe FileAssistant do
       end
       FileUtils.cd "../.."
 
-      # Delete the files
+      # Get matching files then delete the files
       assist = FileAssistant.new
-      assist.delete_files( patterns )
+      files = assist.get_matching_files( patterns )
+      assist.delete_files( files )
 
       # Confirm files kept
       FileUtils.cd "#{test_dir_name}/#{test_dir_to_keep_name}"
