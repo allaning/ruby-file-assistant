@@ -5,6 +5,11 @@ require 'optparse'
 # Create configuration files to instruct RFA to perform tasks such as
 # deleting or renaming files based on specified patterns.
 class FileAssistant
+  attr_accessor :files_to_delete
+
+  def initialize
+    self.files_to_delete = FileAssistantConfig.to_delete
+  end
 
   # Reads and returns contents of specified file.
   def read_file( file_name )
@@ -15,12 +20,6 @@ class FileAssistant
       file.close
       return contents
     end
-  end
-
-  # If the config file containing list of patterns to delete exists,
-  # open the file and return its contents as an array.
-  def get_patterns_to_delete
-    read_file( FileAssistantConfig.to_delete )
   end
 
   # Returns list of file names that match specified pattern
@@ -67,7 +66,7 @@ params = parse_args
 
 if params[:delete] == true
   # Get list of files to delete
-  patterns = file_assistant.get_patterns_to_delete
+  patterns = file_assistant.read_file( file_assistant.files_to_delete )
   puts 'Patterns to delete:'
   puts '==================='
   puts patterns

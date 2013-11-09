@@ -65,11 +65,11 @@
         <h3 class="section-header">Methods</h3>
         <ul class="link-list">
           
+          <li><a href="#method-c-new">::new</a></li>
+          
           <li><a href="#method-i-delete_files">#delete_files</a></li>
           
           <li><a href="#method-i-get_matching_files">#get_matching_files</a></li>
-          
-          <li><a href="#method-i-get_patterns_to_delete">#get_patterns_to_delete</a></li>
           
           <li><a href="#method-i-read_file">#read_file</a></li>
           
@@ -146,9 +146,72 @@ deleting or renaming files based on specified patterns.</p>
       
 
       
+      <!-- Attributes -->
+      <div id="attribute-method-details" class="method-section section">
+        <h3 class="section-header">Attributes</h3>
+
+        
+        <div id="files_to_delete-attribute-method" class="method-detail">
+          <a name="files_to_delete"></a>
+          
+          <a name="files_to_delete="></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">files_to_delete</span><span
+              class="attribute-access-type">[RW]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+      </div><!-- attribute-method-details -->
+      
 
       <!-- Methods -->
       
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
+
+      
+        <div id="new-method" class="method-detail ">
+          <a name="method-c-new"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">new</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="new-source">
+<pre>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">files_to_delete</span> = <span class="ruby-constant">FileAssistantConfig</span>.<span class="ruby-identifier">to_delete</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+
+      
+      </div><!-- public-class-method-details -->
+    
       <div id="public-instance-method-details" class="method-section section">
         <h3 class="section-header">Public Instance Methods</h3>
 
@@ -173,7 +236,7 @@ array.</p>
             
             <div class="method-source-code" id="delete_files-source">
 <pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 38</span>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 37</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete_files</span>( <span class="ruby-identifier">files</span> )
   <span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Deleting file: #{file}&quot;</span>
@@ -209,7 +272,7 @@ array.</p>
             
             <div class="method-source-code" id="get_matching_files-source">
 <pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 27</span>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 26</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">get_matching_files</span>( <span class="ruby-identifier">patterns</span> )
   <span class="ruby-identifier">results</span> = []
   <span class="ruby-identifier">patterns</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">pattern</span><span class="ruby-operator">|</span>
@@ -226,40 +289,6 @@ array.</p>
 
           
         </div><!-- get_matching_files-method -->
-
-      
-        <div id="get_patterns_to_delete-method" class="method-detail ">
-          <a name="method-i-get_patterns_to_delete"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">get_patterns_to_delete</span><span
-              class="method-args">()</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            <p>If the config file containing list of patterns to delete exists, open the
-file and return its contents as an array.</p>
-            
-
-            
-            <div class="method-source-code" id="get_patterns_to_delete-source">
-<pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 22</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_patterns_to_delete</span>
-  <span class="ruby-identifier">read_file</span>( <span class="ruby-constant">FileAssistantConfig</span>.<span class="ruby-identifier">to_delete</span> )
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- get_patterns_to_delete-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- get_patterns_to_delete-method -->
 
       
         <div id="read_file-method" class="method-detail ">
@@ -281,7 +310,7 @@ file and return its contents as an array.</p>
             
             <div class="method-source-code" id="read_file-source">
 <pre>
-<span class="ruby-comment"># File bin/file_assistant.rb, line 10</span>
+<span class="ruby-comment"># File bin/file_assistant.rb, line 15</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">read_file</span>( <span class="ruby-identifier">file_name</span> )
   <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>( <span class="ruby-identifier">file_name</span> )
     <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>( <span class="ruby-identifier">file_name</span>, <span class="ruby-string">&quot;r&quot;</span> )
