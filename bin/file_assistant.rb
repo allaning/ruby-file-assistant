@@ -8,7 +8,7 @@ class FileAssistant
   attr_accessor :files_to_delete
 
   def initialize
-    self.files_to_delete = FileAssistantConfig.to_delete
+    @files_to_delete = FileAssistantConfig.to_delete
   end
 
   # Reads and returns contents of specified file.
@@ -44,15 +44,24 @@ class FileAssistant
 end  # class FileAssistant
 
 # Parse command line args
-def parse_args(argv = ::ARGV)
+def parse_args( argv = ::ARGV )
   params = {}
   opt_parser = OptionParser.new do |opt|
-    opt.on("-d", "--delete", "Delete files") { params[:delete] = true }
-    opt.on("-f", "--force", "Force without confirming") { params[:force] = true }
+
+    opt.on("-d", "--delete [FILE_WITH_PATTERNS]",
+           "Delete files with names matching patterns listed in",
+           "FILE_WITH_PATTERNS file.  Default file name is to_delete.") do |file|
+      params[:delete] = true
+      params[:file_with_patterns_to_delete] = file
+    end
+
+    opt.on("-f", "--force", "Force actions without confirming") { params[:force] = true }
+
     opt.on_tail("-h", "--help", "Show this message") do
       puts opt
       exit
     end
+
   end
   opt_parser.parse! argv
   params
@@ -60,13 +69,23 @@ end
 
 
 # Script starts here
-file_assistant = FileAssistant.new
 params = parse_args
-#puts params
+file_assistant = FileAssistant.new
 
 if params[:delete] == true
+  unless params[:file_with_patterns_to_delete] == nil
+    # Use the specified file
+    file_assistant.files_to_delete = params[:file_with_patterns_to_delete]
+  end
+
   # Get list of files to delete
   patterns = file_assistant.read_file( file_assistant.files_to_delete )
+  if patterns == nil
+    puts "Cannot find file: #{file_assistant.files_to_delete}"
+    exit
+  end
+
+  # Show list of matching files
   puts 'Patterns to delete:'
   puts '==================='
   puts patterns
@@ -88,5 +107,6 @@ if params[:delete] == true
   else
     puts 'No matching files found.'
   end
+
 end
 
