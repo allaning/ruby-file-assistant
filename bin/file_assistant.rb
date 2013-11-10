@@ -11,12 +11,16 @@ class FileAssistant
     @files_to_delete = FileAssistantConfig.to_delete
   end
 
-  # Reads and returns contents of specified file.
+  # Reads and returns contents of specified file ignoring comments and empty lines.
   def read_file( file_name )
     if File.exists?( file_name )
       file = File.open( file_name, "r" )
       contents = []
-      file.each { |line| contents << line.chomp }
+      file.each do |line|
+        unless line.match( /^#/ ) || line.match( /^ *$/ )
+          contents << line.chomp
+        end
+      end
       file.close
       return contents
     end
@@ -89,10 +93,13 @@ if params[:delete] == true
   puts 'Patterns to delete:'
   puts '==================='
   puts patterns
-  puts '==================='
+  puts ''
   files = file_assistant.get_matching_files( patterns )
   if files.length > 0
+    puts 'Matching files to be deleted:'
+    puts '============================='
     puts files
+    puts ''
     unless params[:force] == true
       # Prompt user to confirm deletion
       print 'Delete (y/N)? '

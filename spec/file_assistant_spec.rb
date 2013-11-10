@@ -89,28 +89,21 @@ describe FileAssistant do
   end
 
   describe '#get_matching_files' do
-    it 'gets a list of patterns then find list of matching files' do
+    it 'find list of matching files based on specified pattern' do
       # Setup
       patterns_to_delete = TestConfig.patterns
       files_that_match = [ "#{TestConfig.test_prefix}a.a",
                            "#{TestConfig.test_prefix}r.obj",
                            "#{TestConfig.test_prefix}z.obj" ]
-      # Create file containing patterns
-      patterns_to_delete_file = "#{TestConfig.test_prefix}_patterns.txt"
-      pattern_file = File.new( patterns_to_delete_file, "w" )
-      pattern_file.puts patterns_to_delete
-      pattern_file.close
       # Create the test files
       files_that_match.each do |file|
         temp_file = File.new( file, "w" )
         temp_file.close
       end
 
-      # Read patterns
-      assist = FileAssistant.new
-      patterns = assist.read_file( patterns_to_delete_file )
       # Get matching files
-      matches = assist.get_matching_files( patterns )
+      assist = FileAssistant.new
+      matches = assist.get_matching_files( patterns_to_delete )
       i = 0
       files_that_match.each do |file|
         file.should == matches[i]
@@ -118,7 +111,6 @@ describe FileAssistant do
       end
 
       # Delete the test files
-      File.delete( patterns_to_delete_file )
       files_that_match.each { |file| File.delete( file ) }
     end
   end
