@@ -19,8 +19,8 @@ In either case, a list of files will be displayed as they are deleted.
 The following usage summary can be seen by entering: ruby bin/file_assistant.rb -h
 
 Usage: file_assistant [options]
+
     -d [FILE_WITH_PATTERNS],         Delete files with names matching patterns listed in
         --delete                     FILE_WITH_PATTERNS file.  Default file name is to_delete.
     -f, --force                      Force actions without confirming
     -h, --help                       Show this message
-
